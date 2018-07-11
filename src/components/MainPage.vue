@@ -1,28 +1,33 @@
 <template>
   <div class="mainpage">
     <h2>Main Page</h2>
-    <button @click="qrcode">QRCodeリーダー起動</button>
 
-    <div class="qrdisp" v-if="qrActive">
+    <!-- <button @click="qrcode">QRCodeリーダー起動</button> -->
+
+    <my-compo />
+
+    <div>
+      <button id="show-modal" @click="showModal = true">Show Modal</button>
+      <modal-item v-if="showModal" @close="showModal = false">
+        aaa
+      </modal-item>
     </div>
-    <p>You don't have an account?
-      <router-link to="/signup">create account now!!</router-link>
-    </p>
   </div>
 </template>
 
 <script>
+import Vue from "vue";
+import Test2 from "./Items/Test";
+import Modal from "./Items/ModalWindow";
+
+Vue.component("my-compo", Test2);
+Vue.component("modal-item", Modal);
+
 export default {
-  name: "MainPage",
   data() {
     return {
-      qrActive: false
+      showModal: false
     };
-  },
-  methods: {
-    qrcode: function() {
-      this.qrActive = true;
-    }
   }
 };
 </script>
@@ -42,12 +47,5 @@ li {
 }
 a {
   color: #42b983;
-}
-.qrdisp {
-  margin-top: 20px;
-}
-input {
-  margin: 10px 0;
-  padding: 10px;
 }
 </style>
