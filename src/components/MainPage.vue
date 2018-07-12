@@ -2,26 +2,22 @@
   <div class="mainpage">
     <h2>Main Page</h2>
 
-    <!-- <button @click="qrcode">QRCodeリーダー起動</button> -->
-
     <my-compo />
 
     <div>
-      <button id="show-modal" @click="showModal = true">Show Modal</button>
-      <modal-item v-if="showModal" @close="showModal = false">
-        aaa
-      </modal-item>
+      <button id="show-modal" @click="showModal = true">QEリーダー起動</button>
+      <modal-qr v-if="showModal" @close="showModal = false" />
     </div>
   </div>
 </template>
 
 <script>
-import Vue from "vue";
-import Test2 from "./Items/Test";
-import Modal from "./Items/ModalWindow";
+import Vue from 'vue';
+import Test2 from './Items/Test';
+import ModalQR from './Items/ModalWindowQR';
 
-Vue.component("my-compo", Test2);
-Vue.component("modal-item", Modal);
+Vue.component('my-compo', Test2);
+Vue.component('modal-qr', ModalQR);
 
 export default {
   data() {

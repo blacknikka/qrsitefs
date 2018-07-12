@@ -1,8 +1,8 @@
 <template>
   <div class="signup">
     <h2>Sign up</h2>
-    <input type="text" placeholder="Username" v-model="username">
-    <input type="password" placeholder="Password" v-model="password">
+    <input v-model="username" type="text" placeholder="Username">
+    <input v-model="password" type="password" placeholder="Password">
     <button @click="signUp">Register</button>
     <p>Do you have an account?
       <router-link to="/">sign in now!!</router-link>
@@ -12,26 +12,26 @@
 
 <script>
 export default {
-  name: "Signup",
+  name: 'Signup',
   data() {
     return {
-      username: "",
-      password: ""
+      username: '',
+      password: ''
     };
   },
   methods: {
     signUp: function() {
-      console.log("clicked");
+      console.log('clicked');
 
       // GET /someUrl
-      this.$http.get("http://localhost:3000/signup").then(
+      this.$http.get('http://localhost:3000/signup').then(
         response => {
           // get body data
           console.log(response.body);
         },
         response => {
           // error callback
-          console.log("error");
+          console.log('error');
         }
       );
     }
