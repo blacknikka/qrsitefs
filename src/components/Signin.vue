@@ -9,14 +9,13 @@
       <!-- error message -->
       <p v-cloak style="color : red;">{{error.errorMessage}}</p>
     </div>
-    <p>You don't have an account?
-      <router-link to="/signup">create account now!!</router-link>
-    </p>
   </div>
 </template>
 
 <script>
 import axios from 'axios';
+import Dbg from './Util/Debug';
+
 export default {
   name: 'Signin',
   data() {
@@ -26,12 +25,13 @@ export default {
       error: {
         isError: false,
         errorMessage: ''
-      }
+      },
+      customeToken: ''
     };
   },
   methods: {
     signIn: function() {
-      console.log('clicked');
+      Dbg.console('clicked');
 
       if (this.mail && this.password) {
         // mail, password is not null
@@ -46,13 +46,32 @@ export default {
 
           axios
             .get(url)
-            .then(response => {
+            .then(async response => {
               // get body data
-              console.log(response);
-              this.InitError();
+              // check login result (from server)
+              Dbg.console(response);
+
+              if (response.data.result === true) {
+                this.InitError();
+
+                // rememnber customeToken from firebase( from server )
+                this.customeToken = response.data.token;
+                Dbg.console(this.customeToken);
+
+                // when login sucess, go to data page.
+                this.$router.push({
+                  name: 'MainPage',
+                  params: { token: this.customeToken }
+                });
+              } else {
+                Dbg.console('login error');
+                this.DoError(
+                  'email or password is failed. please verify the input data.'
+                );
+              }
             })
             .catch(error => {
-              console.log(error);
+              Dbg.console(error);
               this.DoError('Error occured !!!');
             });
         } else {

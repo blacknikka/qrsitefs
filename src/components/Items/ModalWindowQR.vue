@@ -3,26 +3,13 @@
     <div class="modal-mask">
       <div class="modal-wrapper">
         <div class="modal-container">
-
-          <div class="modal-header">
-            <slot name="header">
-              default header
-            </slot>
+          <div class="qr-camera">
+            <qrcode-reader @decode="onDecode" />
           </div>
-
-          <div class="modal-body">
-            <slot name="body">
-              default body
-            </slot>
-          </div>
-
           <div class="modal-footer">
-            <slot name="footer">
-              default footer
-              <button class="modal-default-button" @click="$emit('close')">
-                OK
-              </button>
-            </slot>
+            <button class="modal-default-button" @click="$emit('close')">
+              Close
+            </button>
           </div>
         </div>
       </div>
@@ -31,7 +18,24 @@
 </template>
 
 <script>
-export default {};
+import { QrcodeReader } from 'vue-qrcode-reader';
+import Dbg from './../Util/Debug';
+
+export default {
+  components: { QrcodeReader },
+  data() {
+    return {};
+  },
+  methods: {
+    onDecode(decodedString) {
+      Dbg.console(decodedString);
+
+      if (decodedString !== '') {
+        this.$emit('close', decodedString);
+      }
+    }
+  }
+};
 </script>
 
 <style scoped>
@@ -48,12 +52,12 @@ export default {};
 }
 
 .modal-wrapper {
-  display: table-cell;
+  display: flex;
   vertical-align: middle;
+  padding: 20px 30px;
 }
 
 .modal-container {
-  width: 300px;
   margin: 0px auto;
   padding: 20px 30px;
   background-color: #fff;
@@ -61,11 +65,7 @@ export default {};
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.33);
   transition: all 0.3s ease;
   font-family: Helvetica, Arial, sans-serif;
-}
-
-.modal-header h3 {
-  margin-top: 0;
-  color: #42b983;
+  align-self: stretch;
 }
 
 .modal-body {
@@ -97,5 +97,13 @@ export default {};
 .modal-leave-active .modal-container {
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
+}
+
+.modal-footer {
+  margin-top: 10px
+}
+
+qr-camera {
+  align-self: stretch;
 }
 </style>
