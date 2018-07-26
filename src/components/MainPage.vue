@@ -7,25 +7,34 @@
       <modal-qr v-if="showModal" @close="closed" />
       <div v-cloak>{{qrData}}</div>
     </div>
+
+    <div v-if="isData">
+      <machine-list-item v-for="(item, index) in list" :data="item" :key="index" />
+    </div>
   </div>
 </template>
 
 <script>
 import Vue from 'vue';
 import ModalQR from './Items/ModalWindowQR';
-import axios from 'axios';
+import fbMan from './Util/firebase';
+import Dbg from './Util/Debug';
+import MachineListItem from './Items/MachineListItem';
 
 Vue.component('modal-qr', ModalQR);
+Vue.component('machine-list-item', MachineListItem);
 
 export default {
   data() {
     return {
       showModal: false,
-      qrData: ''
+      qrData: '',
+      list: [],
+      isData: false
     };
   },
   methods: {
-    closed(qrData) {
+    async closed(qrData) {
       // showModalをfalseにして画面を消去
       this.showModal = false;
 
@@ -35,18 +44,13 @@ export default {
         this.qrData = qrData;
       }
 
-      // POST using axios
-      // axios.post('http://localhost:3000/data', qs.stringify({ 'bar': 123 }));
-
-      if (typeof this.$route.params['token'] !== 'undefined') {
-        const post = {
-          token: this.$route.params['token']
-        };
-        axios({
-          method: 'POST',
-          url: 'http://localhost:3000/data',
-          data: post
-        }).then(response => console.log(response.status));
+      const machineDatas = await fbMan.GetData('');
+      this.isData = true;
+      Dbg.console(machineDatas);
+      for (const key in machineDatas) {
+        if (machineDatas.hasOwnProperty(key)) {
+          this.list.push(machineDatas[key]);
+        }
       }
     }
   }

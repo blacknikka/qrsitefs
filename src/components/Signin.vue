@@ -13,8 +13,8 @@
 </template>
 
 <script>
-import axios from 'axios';
 import Dbg from './Util/Debug';
+import fbMan from './Util/firebase';
 
 export default {
   name: 'Signin',
@@ -25,12 +25,11 @@ export default {
       error: {
         isError: false,
         errorMessage: ''
-      },
-      customeToken: ''
+      }
     };
   },
   methods: {
-    signIn: function() {
+    signIn: async function() {
       Dbg.console('clicked');
 
       if (this.mail && this.password) {
@@ -40,40 +39,19 @@ export default {
           // mail adress validation
           // GET /someUrl
 
-          const url = `http://localhost:3000/signin?mail=${this.mail}&psw=${
-            this.password
-          }`;
+          if ((await fbMan.CheckUser(this.mail, this.password)) === true) {
+            this.InitError();
 
-          axios
-            .get(url)
-            .then(async response => {
-              // get body data
-              // check login result (from server)
-              Dbg.console(response);
-
-              if (response.data.result === true) {
-                this.InitError();
-
-                // rememnber customeToken from firebase( from server )
-                this.customeToken = response.data.token;
-                Dbg.console(this.customeToken);
-
-                // when login sucess, go to data page.
-                this.$router.push({
-                  name: 'MainPage',
-                  params: { token: this.customeToken }
-                });
-              } else {
-                Dbg.console('login error');
-                this.DoError(
-                  'email or password is failed. please verify the input data.'
-                );
-              }
-            })
-            .catch(error => {
-              Dbg.console(error);
-              this.DoError('Error occured !!!');
+            // when login sucess, go to data page.
+            this.$router.push({
+              name: 'MainPage'
             });
+          } else {
+            Dbg.console('login error');
+            this.DoError(
+              'email or password is failed. please verify the input data.'
+            );
+          }
         } else {
           this.DoError(`${this.mail} is not E-mail. please check.`);
         }
