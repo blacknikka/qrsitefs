@@ -62,15 +62,23 @@ class FirebaseManager {
     const settings = { timestampsInSnapshots: true };
     db.settings(settings);
 
-    let ret = {};
+    const ret = [];
+
     await db
       .collection('machines')
-      .doc('data1')
+      .doc('store01')
+      .collection('mt01')
       .get()
-      .then(doc => {
-        if (doc.exists) {
-          ret = doc.data();
-        }
+      .then(function(querySnapshot) {
+        querySnapshot.forEach(function(doc) {
+          // get document data.
+          // doc.id is used for v-for key.
+          const data = {
+            id: doc.id,
+            data: doc.data()
+          };
+          ret.push(data);
+        });
       });
 
     return ret;

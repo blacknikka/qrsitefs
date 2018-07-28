@@ -8,9 +8,7 @@
       <div v-cloak>{{qrData}}</div>
     </div>
 
-    <div v-if="isData">
-      <machine-list-item v-for="(item, index) in list" :data="item" :key="index" />
-    </div>
+    <machine-list-container v-if="isData" :list="list" />
   </div>
 </template>
 
@@ -20,18 +18,23 @@ import ModalQR from './Items/ModalWindowQR';
 import fbMan from './Util/firebase';
 import Dbg from './Util/Debug';
 import MachineListItem from './Items/MachineListItem';
+import MachineListContainer from './Items/MachineListContainer';
 
 Vue.component('modal-qr', ModalQR);
 Vue.component('machine-list-item', MachineListItem);
+Vue.component('machine-list-container', MachineListContainer);
 
 export default {
   data() {
     return {
       showModal: false,
       qrData: '',
-      list: [],
+      list: {},
       isData: false
     };
+  },
+  mounted() {
+    this.closed('');
   },
   methods: {
     async closed(qrData) {
@@ -40,13 +43,14 @@ export default {
 
       if (typeof qrData !== 'undefined') {
         // qrの読み込みデータを表示
-        console.log(qrData);
+        Dbg.console(qrData);
         this.qrData = qrData;
       }
 
       const machineDatas = await fbMan.GetData('');
       this.isData = true;
-      Dbg.console(machineDatas);
+
+      this.list = [];
       for (const key in machineDatas) {
         if (machineDatas.hasOwnProperty(key)) {
           this.list.push(machineDatas[key]);
