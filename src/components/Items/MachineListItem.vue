@@ -51,12 +51,15 @@ export default {
     };
   },
   mounted() {
-    if (typeof this.dbdata.date !== 'undefined') {
-      this.FromTimeStampToDate(this.dbdata.date);
-    }
-
     if (typeof this.kind !== 'undefined') {
       this.isTitle = this.kind === 'title';
+    }
+
+    if (this.isTitle === true) {
+      this.date = 'date';
+      this.time = 'time';
+    } else {
+      this.FromTimeStampToDate(this.dbdata.date);
     }
   },
   methods: {
@@ -105,10 +108,12 @@ li {
   margin: 2px;
   color: hotpink;
 }
-.v-enter-active, .v-leave-active {
+.v-enter-active,
+.v-leave-active {
   transition: opacity 1s;
 }
-.v-enter, .v-leave-to {
+.v-enter,
+.v-leave-to {
   opacity: 0;
 }
 </style>
